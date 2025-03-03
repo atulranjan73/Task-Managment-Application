@@ -1,0 +1,82 @@
+.login-container {
+  width: 100%;
+  max-width: 350px;
+  margin: 60px auto;
+  padding: 25px;
+  background: #fff;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  text-align: center;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.login-container:hover {
+  transform: scale(1.02);
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #222;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: bold;
+  font-size: 14px;
+  color: #444;
+  text-align: left;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  transition: border 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+input:focus {
+  border: 1px solid #007bff;
+  box-shadow: 0px 0px 8px rgba(0, 123, 255, 0.5);
+  outline: none;
+}
+
+button {
+  padding: 12px;
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+button:hover {
+  background: linear-gradient(45deg, #0056b3, #004095);
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.98);
+}
