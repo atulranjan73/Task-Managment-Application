@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import Login from "../../page/Login";
 
 const API_URL = "http://localhost:3000/auth";
 
@@ -13,20 +14,19 @@ export const signupUser = createAsyncThunk("auth/signup", async (userData, { rej
   }
 });
 
-// User Login
-export const loginUser = createAsyncThunk("auth/login", async (credentials, { rejectWithValue }) => {
-  try {
-    const response = await axios.post(`${API_URL}/login`, credentials);
-    
-    // Save token & user details in localStorage
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user.name)); // Save user info
 
+
+export const loginUser = createAsyncThunk ("auth/login" , async(Credential , {rejectWithValue})=>{
+  try {
+    const response = await axios.post(`${API_URL}/login`,Credential);
+    // savae token
+    localStorage.setItem("token" , response.data.token);
+    localStorage.setItem("user",JSON.stringify(response.data.user.name));
     return response.data;
   } catch (error) {
-    return rejectWithValue(error.response.data.message);
+   return error
   }
-});
+})
 
 // Fetch All Users
 export const fetchAllUsers = createAsyncThunk(

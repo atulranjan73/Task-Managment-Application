@@ -53,7 +53,7 @@ const NotificationPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 py-8 px-4 sm:px-6 lg:px-8 pt-40">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
+
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white animate-fade-in">Task Notifications</h1>
