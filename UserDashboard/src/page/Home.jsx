@@ -212,7 +212,7 @@ function Home() {
                   itemStyle={{ color: "#fff" }}
                 />
                 <Legend wrapperStyle={{ color: "#d1d5db" }} />
-              </PieChart>
+              </           PieChart>
             </ResponsiveContainer>
           </div>
         </div>

@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTaskById, assignTaskCollaborators, updateTask } from "../Redux/Feature/taskSlice";
+import {
+  fetchTaskById,
+  assignTaskCollaborators,
+  updateTask,
+} from "../Redux/Feature/taskSlice";
 import { useParams } from "react-router-dom";
 import { fetchAllUsers } from "../Redux/Feature/AuthSlice";
 
@@ -11,14 +15,15 @@ const Task = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [updatedTask, setUpdatedTask] = useState({});
   const [collaborators, setCollaborators] = useState([]);
-  const [selectedCollaborators, setSelectedCollaborators] = useState({}); // Object mapping taskId to collaborators
+  const [selectedCollaborators, setSelectedCollaborators] = useState({});
   const [isLoadingCollaborators, setIsLoadingCollaborators] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredCollaborators, setFilteredCollaborators] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false); // New: Loading state for updates
 
   useEffect(() => {
     if (taskId) {
-      dispatch(fetchTaskById(taskId)); // Fetch tasks (array)
+      dispatch(fetchTaskById(taskId));
     }
 
     setIsLoadingCollaborators(true);
@@ -51,16 +56,27 @@ const Task = () => {
 
   const handleAddWork = (task) => {
     setIsEditing(true);
-    setUpdatedTask(task);
+    setUpdatedTask(task); // Pre-fill the edit form with current task data
   };
 
   const handleUpdate = () => {
+    if (!updatedTask.id) {
+      alert("Task ID is missing!");
+      return;
+    }
+
+    setIsUpdating(true); // Start loading
     dispatch(updateTask({ taskId: updatedTask.id, updatedTask }))
       .unwrap()
       .then(() => {
-        setIsEditing(false);
+        console.log("Task updated successfully:", updatedTask);
+        setIsEditing(false); // Close the modal
       })
-      .catch((error) => alert("Failed to update task: " + error));
+      .catch((error) => {
+        console.error("Failed to update task:", error);
+        alert("Failed to update task: " + (error.message || error));
+      })
+      .finally(() => setIsUpdating(false)); // Stop loading
   };
 
   const handleAddCollaborator = (taskId, email) => {
@@ -93,7 +109,7 @@ const Task = () => {
   };
 
   return (
-    <div className="pt-34  sm:px-6 py-10 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex flex-col items-center">
+    <div className="pt-34 sm:px-6 py-10 min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 flex flex-col items-center">
       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 text-transparent bg-clip-text py-3 px-6 rounded-lg shadow-lg w-full max-w-xl mb-6">
         Task Details
       </h2>
@@ -207,7 +223,9 @@ const Task = () => {
                                 : handleAddCollaborator(t.id, user.email)
                             }
                           >
-                            {(selectedCollaborators[t.id] || []).includes(user.email) ? "Remove" : "Add"}
+                            {(selectedCollaborators[t.id] || []).includes(user.email)
+                              ? "Remove"
+                              : "Add"}
                           </button>
                         </div>
                       ))
@@ -269,23 +287,39 @@ const Task = () => {
               placeholder="Title"
               value={updatedTask.title || ""}
               onChange={(e) => setUpdatedTask({ ...updatedTask, title: e.target.value })}
+              disabled={isUpdating}
             />
             <textarea
               className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white placeholder-gray-400 resize-none h-28"
               placeholder="Description"
               value={updatedTask.description || ""}
-              onChange={(e) => setUpdatedTask({ ...updatedTask, description: e.target.value })}
+              onChange={(e) =>
+                setUpdatedTask({ ...updatedTask, description: e.target.value })
+              }
+              disabled={isUpdating}
             />
+            <select
+              value={updatedTask.status || ""}
+              onChange={(e) => setUpdatedTask({ ...updatedTask, status: e.target.value })}
+              className="w-full p-3 bg-gray-800 border border-gray-600 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
+              disabled={isUpdating}
+            >
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
             <div className="flex justify-end gap-3">
               <button
-                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-200"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-all duration-200 disabled:bg-indigo-400"
                 onClick={handleUpdate}
+                disabled={isUpdating}
               >
-                Update Task
+                {isUpdating ? "Updating..." : "Update Task"}
               </button>
               <button
                 className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-200"
                 onClick={() => setIsEditing(false)}
+                disabled={isUpdating}
               >
                 Close
               </button>
